@@ -1,24 +1,20 @@
+## 💻 Trên trạm local (Linux)
 
-## On your local workstation (Linux)
+### ✔️ Tạo chứng thư TLS
 
-#### Generate TLS certificates
-##### Download required binaries
-```
-{
-  CFSSL_VERSION=1.6.5
-  wget -q --show-progress \
-    https://github.com/cloudflare/cfssl/releases/download/v${CFSSL_VERSION}/cfssl_${CFSSL_VERSION}_linux_amd64 \
-    https://github.com/cloudflare/cfssl/releases/download/v${CFSSL_VERSION}/cfssljson_${CFSSL_VERSION}_linux_amd64
-  
-  chmod +x cfssl_${CFSSL_VERSION}_linux_amd64 cfssljson_${CFSSL_VERSION}_linux_amd64
-  mv cfssl_${CFSSL_VERSION}_linux_amd64 /usr/local/bin/cfssl && mv cfssljson_${CFSSL_VERSION}_linux_amd64 /usr/local/bin/cfssljson
-}
-```
-##### Create a Certificate Authority (CA)
-> We then use this CA to create other TLS certificates
-```
-{
+#### Ạ Tải các binary cần thiết
+```bash
+CFSSL_VERSION=1.6.5
+wget -q --show-progress \
+  https://github.com/cloudflare/cfssl/releases/download/v${CFSSL_VERSION}/cfssl_${CFSSL_VERSION}_linux_amd64 \
+  https://github.com/cloudflare/cfssl/releases/download/v${CFSSL_VERSION}/cfssljson_${CFSSL_VERSION}_linux_amd64
 
+chmod +x cfssl_${CFSSL_VERSION}_linux_amd64 cfssljson_${CFSSL_VERSION}_linux_amd64
+mv cfssl_${CFSSL_VERSION}_linux_amd64 /usr/local/bin/cfssl && mv cfssljson_${CFSSL_VERSION}_linux_amd64 /usr/local/bin/cfssljson
+```
+
+#### Ạ Tạo Certificate Authority (CA)
+```bash
 cat > ca-config.json <<EOF
 {
     "signing": {
@@ -54,13 +50,10 @@ cat > ca-csr.json <<EOF
 EOF
 
 cfssl gencert -initca ca-csr.json | cfssljson -bare ca
-
-}
 ```
-##### Create TLS certificates
-```
-{
 
+#### Ạ Tạo TLS cho etcd
+```bash
 ETCD1_IP="10.0.0.11"
 ETCD2_IP="10.0.0.12"
 ETCD3_IP="10.0.0.13"
@@ -91,68 +84,44 @@ cat > etcd-csr.json <<EOF
 EOF
 
 cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -profile=etcd etcd-csr.json | cfssljson -bare etcd
-
-}
 ```
-##### Copy the certificates to etcd nodes
-```
-{
 
+#### Ạ Copy chứng chỉ tới các node etcd
+```bash
 declare -a NODES=(10.0.0.11 10.0.0.12 10.0.0.13)
-
 for node in ${NODES[@]}; do
-  scp ca.pem etcd.pem etcd-key.pem root@$node: 
+  scp ca.pem etcd.pem etcd-key.pem root@$node:
 done
-
-}
 ```
 
-## On all etcd nodes
+## 💪 Trên mỗi node etcd
 
-> Perform all commands logged in as **root** user or prefix each command with **sudo** as appropriate
+> Đăng nhập với quyền `root` hoặc dùng `sudo`
 
-##### Copy the certificates to a standard location
-```
-{
-  mkdir -p /etc/etcd/pki /var/lib/etcd
-  mv ca.pem etcd.pem etcd-key.pem /etc/etcd/pki/
-  ls -la /etc/etcd/pki/
-}
+#### Ạ Copy TLS vào đúng đường dẫn
+```bash
+mkdir -p /etc/etcd/pki /etc/etcd/snapshot
+mv ca.pem etcd.pem etcd-key.pem /etc/etcd/pki/
+ls -la /etc/etcd/pki/
 ```
 
-##### Download etcd & etcdctl binaries from Github
-```
-{
-  ETCD_VERSION=v3.5.21
-
-  echo "[*] Downloading etcd ${ETCD_VERSION}..."
-  wget -q --show-progress "https://github.com/etcd-io/etcd/releases/download/${ETCD_VERSION}/etcd-${ETCD_VERSION}-linux-amd64.tar.gz"
-
-  echo "[*] Extracting etcd..."
-  tar -zxf etcd-${ETCD_VERSION}-linux-amd64.tar.gz
-
-  echo "[*] Moving binaries to /usr/local/bin/..."
-  sudo mv etcd-${ETCD_VERSION}-linux-amd64/etcd* /usr/local/bin/
-
-  echo "[*] Cleaning up..."
-  rm -rf etcd-${ETCD_VERSION}-linux-amd64*
-  etcdctl version
-}
+#### Ạ Cài đặt etcd và etcdctl
+```bash
+ETCD_VERSION=v3.5.21
+wget -q --show-progress "https://github.com/etcd-io/etcd/releases/download/${ETCD_VERSION}/etcd-${ETCD_VERSION}-linux-amd64.tar.gz"
+tar -zxf etcd-${ETCD_VERSION}-linux-amd64.tar.gz
+mv etcd-${ETCD_VERSION}-linux-amd64/etcd* /usr/local/bin/
+rm -rf etcd-${ETCD_VERSION}-linux-amd64*
+etcdctl version
 ```
 
-##### Create systemd unit file for etcd service
-> Set NODE_IP to the correct IP of the machine where you are running this
-```
-{
-
+#### Ạ Khai báo unit file cho systemd
+```bash
 NODE_IP="10.0.0.11"
-
 ETCD_NAME=$(hostname -s)
-
 ETCD1_IP="10.0.0.11"
 ETCD2_IP="10.0.0.12"
 ETCD3_IP="10.0.0.13"
-
 
 cat <<EOF >/etc/systemd/system/etcd.service
 [Unit]
@@ -184,21 +153,16 @@ RestartSec=5
 [Install]
 WantedBy=multi-user.target
 EOF
-
-}
 ```
 
-##### Enable and Start etcd service
-```
-{
-  systemctl daemon-reload
-  systemctl enable --now etcd
-}
+#### Ạ Khởi động etcd
+```bash
+systemctl daemon-reload
+systemctl enable --now etcd
 ```
 
-##### Verify Etcd cluster status
-> In any one of the etcd nodes
-```
+#### Ạ Kiểm tra tình trạng cluster
+```bash
 ETCDCTL_API=3 etcdctl \
   --endpoints=https://127.0.0.1:2379 \
   --cacert=/etc/etcd/pki/ca.pem \
@@ -206,8 +170,9 @@ ETCDCTL_API=3 etcdctl \
   --key=/etc/etcd/pki/etcd-key.pem \
   member list --write-out=table
 ```
-Better to export these as environment variables and connect to the clutser instead of a specific node
-```
+
+#### Ạ Thiết lập environment biến
+```bash
 cat <<EOT | sudo tee /etc/profile.d/etcdctl.sh > /dev/null
 export ETCDCTL_API=3
 export ETCDCTL_ENDPOINTS="https://10.0.0.11:2379,https://10.0.0.12:2379,https://10.0.0.13:2379"
@@ -216,12 +181,42 @@ export ETCDCTL_CERT="/etc/etcd/pki/etcd.pem"
 export ETCDCTL_KEY="/etc/etcd/pki/etcd-key.pem"
 EOT
 
-sudo chmod +x /etc/profile.d/etcdctl.sh
+chmod +x /etc/profile.d/etcdctl.sh
 source /etc/profile.d/etcdctl.sh
 ```
-And now its a lot easier
-```
+
+Giờ bạn có thể dùng:
+```bash
 etcdctl member list --write-out=table
 etcdctl endpoint status --write-out=table
 etcdctl endpoint health --write-out=table
+```
+
+---
+
+# 🧵 ETCD Snapshot & Khôi phục với TLS
+
+## 📆 Tạo snapshot
+```bash
+ETCDCTL_ENDPOINTS=https://10.0.0.11:2379 etcdctl snapshot save /etc/etcd/snapshot/etcd-snapshot-$(date +"%Y-%m-%d").db
+```
+
+## 🔍 Kiểm tra snapshot
+```bash
+etcdutl snapshot status /etc/etcd/snapshot/etcd-snapshot-$(date +"%Y-%m-%d").db --write-out=table
+```
+
+## 🌁 Backup thư mục etcd hiện tại
+```bash
+mv /var/lib/etcd /var/lib/etcd.bak-$(date +"%Y-%m-%d")
+```
+
+## ♻️ Khôi phục snapshot (chạy trên tất cả các node)
+```bash
+etcdutl snapshot restore /etc/etcd/snapshot/etcd-snapshot-$(date +"%Y-%m-%d").db \
+  --name etcd-1 \
+  --initial-cluster "etcd-1=https://10.0.0.11:2380,etcd-2=https://10.0.0.12:2380,etcd-3=https://10.0.0.13:2380" \
+  --initial-advertise-peer-urls https://10.0.0.11:2380 \
+  --data-dir /var/lib/etcd \
+  --initial-cluster-token etcd-cluster-1
 ```
