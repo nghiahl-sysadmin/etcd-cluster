@@ -207,11 +207,16 @@ ETCDCTL_API=3 etcdctl \
 ```
 Better to export these as environment variables and connect to the clutser instead of a specific node
 ```
-export ETCDCTL_API=3 
-export ETCDCTL_ENDPOINTS=https://10.0.0.11:2379,https://10.0.0.12:2379,https://10.0.0.13:2379
-export ETCDCTL_CACERT=/etc/etcd/pki/ca.pem
-export ETCDCTL_CERT=/etc/etcd/pki/etcd.pem
-export ETCDCTL_KEY=/etc/etcd/pki/etcd-key.pem
+cat <<EOT | sudo tee /etc/profile.d/etcdctl.sh > /dev/null
+export ETCDCTL_API=3
+export ETCDCTL_ENDPOINTS="https://10.0.0.11:2379,https://10.0.0.12:2379,https://10.0.0.13:2379"
+export ETCDCTL_CACERT="/etc/etcd/pki/ca.pem"
+export ETCDCTL_CERT="/etc/etcd/pki/etcd.pem"
+export ETCDCTL_KEY="/etc/etcd/pki/etcd-key.pem"
+EOT
+
+sudo chmod +x /etc/profile.d/etcdctl.sh
+source /etc/profile.d/etcdctl.sh
 ```
 And now its a lot easier
 ```
