@@ -255,7 +255,7 @@ mv /var/lib/etcd /var/lib/etcd.bak-$(date +"%Y-%m-%d")
 ```bash
 systemctl stop etcd.service # Dừng toàn bộ service etcd trên các node trước khi restore tránh xung đột database
 
-# Lưu ý chỉ cần lấy 1 bản restore của một trong 3 node để thực hiện trên toàn bộ vì bản snapshot đều có cùng một trạng thái dữ liệu nhất quán
+# Lưu ý chỉ cần lấy 1 bản restore của một trong 3 node để thực hiện trên toàn bộ node etcd, vì bản snapshot đều có cùng một trạng thái dữ liệu nhất quán
 etcdutl snapshot restore /etc/etcd/snapshot/etcd-snapshot-$(date +"%Y-%m-%d").db \
   --name etcd-1 \
   --initial-cluster "etcd-1=https://10.0.0.11:2380,etcd-2=https://10.0.0.12:2380,etcd-3=https://10.0.0.13:2380" \
