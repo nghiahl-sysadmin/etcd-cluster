@@ -162,6 +162,7 @@ Description=etcd
 Type=notify
 ExecStart=/usr/local/bin/etcd \\
   --name ${ETCD_NAME} \\
+  --data-dir=/var/lib/etcd \\
   --cert-file=/etc/etcd/pki/etcd.pem \\
   --key-file=/etc/etcd/pki/etcd-key.pem \\
   --peer-cert-file=/etc/etcd/pki/etcd.pem \\
