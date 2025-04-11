@@ -175,7 +175,7 @@ ExecStart=/usr/local/bin/etcd \\
   --advertise-client-urls https://${NODE_IP}:2379 \\
   --listen-client-urls https://${NODE_IP}:2379,https://127.0.0.1:2379 \\
   --initial-cluster-token etcd-cluster-1 \\
-  --initial-cluster etcd1=https://${ETCD1_IP}:2380,etcd2=https://${ETCD2_IP}:2380,etcd3=https://${ETCD3_IP}:2380 \\
+  --initial-cluster etcd-1=https://${ETCD1_IP}:2380,etcd-2=https://${ETCD2_IP}:2380,etcd-3=https://${ETCD3_IP}:2380 \\
   --initial-cluster-state new
 Restart=on-failure
 RestartSec=5
