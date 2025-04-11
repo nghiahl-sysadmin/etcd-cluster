@@ -124,10 +124,18 @@ done
 ```
 {
   ETCD_VERSION=v3.5.21
+
+  echo "[*] Downloading etcd ${ETCD_VERSION}..."
   wget -q --show-progress "https://github.com/etcd-io/etcd/releases/download/${ETCD_VERSION}/etcd-${ETCD_VERSION}-linux-amd64.tar.gz"
-  tar zxf ${ETCD_VERSION}-linux-amd64.tar.gz
-  mv ${ETCD_VERSION}-linux-amd64/etcd* /usr/local/bin/
-  rm -rf etcd*
+
+  echo "[*] Extracting etcd..."
+  tar -zxf etcd-${ETCD_VERSION}-linux-amd64.tar.gz
+
+  echo "[*] Moving binaries to /usr/local/bin/..."
+  sudo mv etcd-${ETCD_VERSION}-linux-amd64/etcd* /usr/local/bin/
+
+  echo "[*] Cleaning up..."
+  rm -rf etcd-${ETCD_VERSION}-linux-amd64*
 }
 ```
 
