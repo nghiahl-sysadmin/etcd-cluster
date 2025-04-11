@@ -115,7 +115,8 @@ done
 ```
 {
   mkdir -p /etc/etcd/pki
-  mv ca.pem etcd.pem etcd-key.pem /etc/etcd/pki/ 
+  mv ca.pem etcd.pem etcd-key.pem /etc/etcd/pki/
+  ls -la /etc/etcd/pki/
 }
 ```
 
