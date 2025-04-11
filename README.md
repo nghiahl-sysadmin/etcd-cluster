@@ -42,8 +42,7 @@ cat > ca-csr.json <<EOF
     {
       "C": "VN",
       "ST": "Ho Chi Minh",
-      "O": "Team 1",
-      "OU": "Etcd-CA"
+      "OU": "CA"
     }
   ]
 }
@@ -76,8 +75,7 @@ cat > etcd-csr.json <<EOF
     {
       "C": "VN",
       "ST": "Ho Chi Minh",
-      "O": "Team 1",
-      "OU": "Etcd"
+      "OU": "Etcd Cluster"
     }
   ]
 }
