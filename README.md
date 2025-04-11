@@ -136,6 +136,7 @@ done
 
   echo "[*] Cleaning up..."
   rm -rf etcd-${ETCD_VERSION}-linux-amd64*
+  etcdctl version
 }
 ```
 
