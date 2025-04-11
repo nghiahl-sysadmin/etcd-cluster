@@ -36,7 +36,7 @@ EOF
 
 cat > ca-csr.json <<EOF
 {
-  "CN": "etcd cluster",
+  "CN": "Etcd Cluster",
   "key": {
     "algo": "rsa",
     "size": 2048
@@ -45,8 +45,8 @@ cat > ca-csr.json <<EOF
     {
       "C": "VN",
       "ST": "Ho Chi Minh",
-      "O": "TEAM 1",
-      "OU": "ETCD-CA",
+      "O": "Team 1",
+      "OU": "Etcd-CA",
     }
   ]
 }
@@ -60,13 +60,13 @@ cfssl gencert -initca ca-csr.json | cfssljson -bare ca
 ```
 {
 
-ETCD1_IP="172.16.16.221"
-ETCD2_IP="172.16.16.222"
-ETCD3_IP="172.16.16.223"
+ETCD1_IP="10.0.0.11"
+ETCD2_IP="10.0.0.12"
+ETCD3_IP="10.0.0.13"
 
 cat > etcd-csr.json <<EOF
 {
-  "CN": "etcd",
+  "CN": "Etcd",
   "hosts": [
     "localhost",
     "127.0.0.1",
@@ -80,11 +80,10 @@ cat > etcd-csr.json <<EOF
   },
   "names": [
     {
-      "C": "GB",
-      "L": "England",
-      "O": "Kubernetes",
-      "OU": "etcd",
-      "ST": "Cambridge"
+      "C": "VN",
+      "ST": "Ho Chi Minh",
+      "O": "TEAM 1",
+      "OU": "Etcd",
     }
   ]
 }
@@ -98,7 +97,7 @@ cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -profile=etcd
 ```
 {
 
-declare -a NODES=(172.16.16.221 172.16.16.222 172.16.16.223)
+declare -a NODES=(10.0.0.11 10.0.0.12 10.0.0.13)
 
 for node in ${NODES[@]}; do
   scp ca.pem etcd.pem etcd-key.pem root@$node: 
@@ -122,10 +121,10 @@ done
 ##### Download etcd & etcdctl binaries from Github
 ```
 {
-  ETCD_VER=v3.5.1
-  wget -q --show-progress "https://github.com/etcd-io/etcd/releases/download/${ETCD_VER}/etcd-${ETCD_VER}-linux-amd64.tar.gz"
-  tar zxf etcd-v3.5.1-linux-amd64.tar.gz
-  mv etcd-v3.5.1-linux-amd64/etcd* /usr/local/bin/
+  ETCD_VERSION=v3.5.21
+  wget -q --show-progress "https://github.com/etcd-io/etcd/releases/download/${ETCD_VERSION}/etcd-${ETCD_VERSION}-linux-amd64.tar.gz"
+  tar zxf ${ETCD_VERSION}-linux-amd64.tar.gz
+  mv ${ETCD_VERSION}-linux-amd64/etcd* /usr/local/bin/
   rm -rf etcd*
 }
 ```
@@ -135,13 +134,13 @@ done
 ```
 {
 
-NODE_IP="172.16.16.221"
+NODE_IP="10.0.0.11"
 
 ETCD_NAME=$(hostname -s)
 
-ETCD1_IP="172.16.16.221"
-ETCD2_IP="172.16.16.222"
-ETCD3_IP="172.16.16.223"
+ETCD1_IP="10.0.0.11"
+ETCD2_IP="10.0.0.12"
+ETCD3_IP="10.0.0.13"
 
 
 cat <<EOF >/etc/systemd/system/etcd.service
@@ -198,7 +197,7 @@ ETCDCTL_API=3 etcdctl \
 Better to export these as environment variables and connect to the clutser instead of a specific node
 ```
 export ETCDCTL_API=3 
-export ETCDCTL_ENDPOINTS=https://172.16.16.221:2379,https://172.16.16.222:2379,https://172.16.16.223:2379
+export ETCDCTL_ENDPOINTS=https://10.0.0.11:2379,https://10.0.0.12:2379,https://10.0.0.13:2379
 export ETCDCTL_CACERT=/etc/etcd/pki/ca.pem
 export ETCDCTL_CERT=/etc/etcd/pki/etcd.pem
 export ETCDCTL_KEY=/etc/etcd/pki/etcd-key.pem
