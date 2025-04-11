@@ -253,7 +253,7 @@ mv /var/lib/etcd /var/lib/etcd.bak-$(date +"%Y-%m-%d")
 
 ## ♻️ Khôi phục snapshot (chạy trên tất cả các node)
 ```bash
-systemctl stop etcd.service # Dừng toàn bộ service etcd trên các node trước khi restore tránh xung đột database
+systemctl stop etcd.service # Dừng chạy service etcd trên toàn bộ node trước khi restore tránh xung đột database
 
 # Lưu ý chỉ cần lấy 1 bản restore của một trong 3 node để thực hiện trên toàn bộ node etcd, vì bản snapshot đều có cùng một trạng thái dữ liệu nhất quán
 etcdutl snapshot restore /etc/etcd/snapshot/etcd-snapshot-$(date +"%Y-%m-%d").db \
