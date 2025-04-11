@@ -2,7 +2,7 @@
 
 ### ✔️ Tạo chứng thư TLS
 
-#### Ạ Tải các binary cần thiết
+#### Tải các binary cần thiết
 ```bash
 CFSSL_VERSION=1.6.5
 wget -q --show-progress \
@@ -13,7 +13,7 @@ chmod +x cfssl_${CFSSL_VERSION}_linux_amd64 cfssljson_${CFSSL_VERSION}_linux_amd
 mv cfssl_${CFSSL_VERSION}_linux_amd64 /usr/local/bin/cfssl && mv cfssljson_${CFSSL_VERSION}_linux_amd64 /usr/local/bin/cfssljson
 ```
 
-#### Ạ Tạo Certificate Authority (CA)
+#### Tạo Certificate Authority (CA)
 ```bash
 cat > ca-config.json <<EOF
 {
@@ -52,7 +52,7 @@ EOF
 cfssl gencert -initca ca-csr.json | cfssljson -bare ca
 ```
 
-#### Ạ Tạo TLS cho etcd
+#### Tạo TLS cho etcd
 ```bash
 ETCD1_IP="10.0.0.11"
 ETCD2_IP="10.0.0.12"
@@ -86,7 +86,7 @@ EOF
 cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -profile=etcd etcd-csr.json | cfssljson -bare etcd
 ```
 
-#### Ạ Copy chứng chỉ tới các node etcd
+#### Copy chứng chỉ tới các node etcd
 ```bash
 declare -a NODES=(10.0.0.11 10.0.0.12 10.0.0.13)
 for node in ${NODES[@]}; do
@@ -98,14 +98,14 @@ done
 
 > Đăng nhập với quyền `root` hoặc dùng `sudo`
 
-#### Ạ Copy TLS vào đúng đường dẫn
+#### Copy TLS vào đúng đường dẫn
 ```bash
 mkdir -p /etc/etcd/pki /etc/etcd/snapshot
 mv ca.pem etcd.pem etcd-key.pem /etc/etcd/pki/
 ls -la /etc/etcd/pki/
 ```
 
-#### Ạ Cài đặt etcd và etcdctl
+#### Cài đặt etcd và etcdctl
 ```bash
 ETCD_VERSION=v3.5.21
 wget -q --show-progress "https://github.com/etcd-io/etcd/releases/download/${ETCD_VERSION}/etcd-${ETCD_VERSION}-linux-amd64.tar.gz"
@@ -115,7 +115,7 @@ rm -rf etcd-${ETCD_VERSION}-linux-amd64*
 etcdctl version
 ```
 
-#### Ạ Khai báo unit file cho systemd
+#### Khai báo unit file cho systemd
 ```bash
 NODE_IP="10.0.0.11"
 ETCD_NAME=$(hostname -s)
@@ -155,13 +155,13 @@ WantedBy=multi-user.target
 EOF
 ```
 
-#### Ạ Khởi động etcd
+#### Khởi động etcd
 ```bash
 systemctl daemon-reload
 systemctl enable --now etcd
 ```
 
-#### Ạ Kiểm tra tình trạng cluster
+#### Kiểm tra tình trạng cluster
 ```bash
 ETCDCTL_API=3 etcdctl \
   --endpoints=https://127.0.0.1:2379 \
@@ -171,7 +171,7 @@ ETCDCTL_API=3 etcdctl \
   member list --write-out=table
 ```
 
-#### Ạ Thiết lập environment biến
+#### Thiết lập environment biến
 ```bash
 cat <<EOT | sudo tee /etc/profile.d/etcdctl.sh > /dev/null
 export ETCDCTL_API=3
