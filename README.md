@@ -5,10 +5,8 @@
 ##### Download required binaries
 ```
 {
-  wget -q --show-progress \
-    https://github.com/cloudflare/cfssl/releases/download/v1.6.5/cfssl_1.6.5_linux_amd64 -O cfssl \
-    https://github.com/cloudflare/cfssl/releases/download/v1.6.5/cfssljson_1.6.5_linux_amd64 -O cfssljson
-  
+  wget -q --show-progress https://github.com/cloudflare/cfssl/releases/download/v1.6.5/cfssl_1.6.5_linux_amd64 -O cfssl
+  wget -q --show-progress https://github.com/cloudflare/cfssl/releases/download/v1.6.5/cfssljson_1.6.5_linux_amd64 -O cfssljson
   chmod +x cfssl cfssljson
   sudo mv cfssl cfssljson /usr/local/bin/
 }
