@@ -47,7 +47,7 @@ cat > ca-csr.json <<EOF
       "C": "VN",
       "ST": "Ho Chi Minh",
       "O": "Team 1",
-      "OU": "Etcd-CA",
+      "OU": "Etcd-CA"
     }
   ]
 }
@@ -84,7 +84,7 @@ cat > etcd-csr.json <<EOF
       "C": "VN",
       "ST": "Ho Chi Minh",
       "O": "TEAM 1",
-      "OU": "Etcd",
+      "OU": "Etcd"
     }
   ]
 }
