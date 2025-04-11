@@ -1,3 +1,44 @@
+# 🛠️ Hướng dẫn triển khai cụm Etcd 3-node với TLS trên Ubuntu 24.04 LTS
+
+---
+
+## 🧰 1. Chuẩn bị môi trường
+
+### ✅ Yêu cầu:
+- 3 máy chủ cài đặt **Ubuntu Server 24.04 LTS**
+- Kết nối mạng nội bộ giữa các node
+- Quyền **root** hoặc có thể sử dụng `sudo`
+- Tắt firewall nội bộ hoặc mở các port cần thiết: `2379`, `2380`
+
+---
+
+### 📦 Máy chủ & thông tin IP:
+
+| Hostname | IP         | Vai trò              |
+|----------|------------|----------------------|
+| etcd-1   | 10.0.0.11  | Leader hoặc Follower |
+| etcd-2   | 10.0.0.12  | Leader hoặc Follower |
+| etcd-3   | 10.0.0.13  | Leader hoặc Follower |
+
+---
+
+### ⚙️ Thiết lập cơ bản trên **cả 3 máy chủ**:
+
+```bash
+# Cập nhật hệ thống
+apt update && apt upgrade -y && apt -y autoremove
+
+# Đặt hostname phù hợp trên từng máy
+sudo hostnamectl set-hostname etcd-1  # Thay đổi phù hợp với từng node
+
+# Cập nhật file hosts để các node nhận diện được nhau
+cat <<EOF | sudo tee /etc/hosts > /dev/null
+127.0.0.1 localhost
+10.0.0.11 etcd-1
+10.0.0.12 etcd-2
+10.0.0.13 etcd-3
+EOF
+
 ## 💻 Trên trạm local (Linux)
 
 ### ✔️ Cài chứng thư CFSSL
