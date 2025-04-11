@@ -193,6 +193,13 @@ RestartSec=5
 [Install]
 WantedBy=multi-user.target
 EOF
+cat << 'EOF' > /etc/rsyslog.d/30-etcd.conf
+if $programname == 'etcd' then /var/log/etcd.log
+& stop
+EOF
+touch /var/log/etcd.log
+chown syslog:adm /var/log/etcd.log
+chmod 640 /var/log/etcd.log
 ```
 
 #### Khởi động etcd
