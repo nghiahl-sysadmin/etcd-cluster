@@ -203,7 +203,7 @@ ETCDCTL_API=3 etcdctl \
   --cacert=/etc/etcd/pki/ca.pem \
   --cert=/etc/etcd/pki/etcd.pem \
   --key=/etc/etcd/pki/etcd-key.pem \
-  member list
+  member list --write-out=table
 ```
 Better to export these as environment variables and connect to the clutser instead of a specific node
 ```
@@ -220,7 +220,7 @@ source /etc/profile.d/etcdctl.sh
 ```
 And now its a lot easier
 ```
-etcdctl member list
-etcdctl endpoint status
-etcdctl endpoint health
+etcdctl member list --write-out=table
+etcdctl endpoint status --write-out=table
+etcdctl endpoint health --write-out=table
 ```
