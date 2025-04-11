@@ -204,6 +204,7 @@ chmod 640 /var/log/etcd.log
 
 #### Khởi động etcd
 ```bash
+systemctl restart rsyslog
 systemctl daemon-reload
 systemctl enable --now etcd
 ```
