@@ -114,7 +114,7 @@ done
 ##### Copy the certificates to a standard location
 ```
 {
-  mkdir -p /etc/etcd/pki
+  mkdir -p /etc/etcd/pki /var/lib/etcd
   mv ca.pem etcd.pem etcd-key.pem /etc/etcd/pki/
   ls -la /etc/etcd/pki/
 }
