@@ -1,6 +1,6 @@
 ## 💻 Trên trạm local (Linux)
 
-### ✔️ Tạo chứng thư TLS
+### ✔️ Cài chứng thư CFSSL
 
 #### Tải các binary cần thiết
 ```bash
@@ -52,7 +52,7 @@ EOF
 cfssl gencert -initca ca-csr.json | cfssljson -bare ca
 ```
 
-#### Tạo TLS cho etcd
+#### Tạo chứng chỉ TLS cho etcd
 ```bash
 ETCD1_IP="10.0.0.11"
 ETCD2_IP="10.0.0.12"
@@ -76,7 +76,7 @@ cat > etcd-csr.json <<EOF
     {
       "C": "VN",
       "ST": "Ho Chi Minh",
-      "O": "TEAM 1",
+      "O": "Team 1",
       "OU": "Etcd"
     }
   ]
@@ -144,7 +144,7 @@ ExecStart=/usr/local/bin/etcd \\
   --listen-peer-urls https://${NODE_IP}:2380 \\
   --advertise-client-urls https://${NODE_IP}:2379 \\
   --listen-client-urls https://${NODE_IP}:2379,https://127.0.0.1:2379 \\
-  --initial-cluster-token etcd-cluster-1 \\
+  --initial-cluster-token etcd-cluster \\
   --initial-cluster etcd-1=https://${ETCD1_IP}:2380,etcd-2=https://${ETCD2_IP}:2380,etcd-3=https://${ETCD3_IP}:2380 \\
   --initial-cluster-state new
 Restart=on-failure
@@ -218,5 +218,5 @@ etcdutl snapshot restore /etc/etcd/snapshot/etcd-snapshot-$(date +"%Y-%m-%d").db
   --initial-cluster "etcd-1=https://10.0.0.11:2380,etcd-2=https://10.0.0.12:2380,etcd-3=https://10.0.0.13:2380" \
   --initial-advertise-peer-urls https://10.0.0.11:2380 \
   --data-dir /var/lib/etcd \
-  --initial-cluster-token etcd-cluster-1
+  --initial-cluster-token etcd-cluster
 ```
