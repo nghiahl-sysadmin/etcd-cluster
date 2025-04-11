@@ -38,6 +38,10 @@ cat <<EOF | sudo tee /etc/hosts > /dev/null
 10.0.0.12 etcd-2
 10.0.0.13 etcd-3
 EOF
+
+# Cập nhật Datetime
+timedatectl set-timezone Asia/Ho_Chi_Minh
+timedatectl set-ntp true
 ```
 
 ## 💻 Trên trạm local (Linux)
