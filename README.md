@@ -6,8 +6,8 @@
 ```
 {
   wget -q --show-progress \
-    https://storage.googleapis.com/kubernetes-the-hard-way/cfssl/1.4.1/linux/cfssl \
-    https://storage.googleapis.com/kubernetes-the-hard-way/cfssl/1.4.1/linux/cfssljson
+    https://github.com/cloudflare/cfssl/releases/download/v1.6.5/cfssl_1.6.5_linux_amd64 -O cfssl \
+    https://github.com/cloudflare/cfssl/releases/download/v1.6.5/cfssljson_1.6.5_linux_amd64 -O cfssljson
   
   chmod +x cfssl cfssljson
   sudo mv cfssl cfssljson /usr/local/bin/
@@ -22,11 +22,11 @@ cat > ca-config.json <<EOF
 {
     "signing": {
         "default": {
-            "expiry": "8760h"
+            "expiry": "87600h"
         },
         "profiles": {
             "etcd": {
-                "expiry": "8760h",
+                "expiry": "87600h",
                 "usages": ["signing","key encipherment","server auth","client auth"]
             }
         }
@@ -43,11 +43,10 @@ cat > ca-csr.json <<EOF
   },
   "names": [
     {
-      "C": "GB",
-      "L": "England",
-      "O": "Kubernetes",
+      "C": "VN",
+      "ST": "Ho Chi Minh",
+      "O": "TEAM 1",
       "OU": "ETCD-CA",
-      "ST": "Cambridge"
     }
   ]
 }
