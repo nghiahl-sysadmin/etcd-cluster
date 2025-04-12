@@ -79,7 +79,7 @@ EOF
 
 cat > ca-csr.json <<EOF
 {
-  "CN": "Etcd Cluster",
+  "CN": "Root CA",
   "key": {
     "algo": "rsa",
     "size": 2048
