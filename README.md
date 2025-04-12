@@ -1,4 +1,4 @@
-# 🛠️ Hướng dẫn triển khai cụm Etcd 3-node với TLS trên Ubuntu 24.04 LTS
+# 🛠️ Hướng dẫn triển khai cụm Etcd 3-node với TLS mutual authentication trên Ubuntu 24.04 LTS
 
 ---
 
